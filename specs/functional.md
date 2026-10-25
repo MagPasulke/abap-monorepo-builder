@@ -1,222 +1,222 @@
-# Funktionale Spezifikation: ABAP-Pakete in ein Git-Monorepo übernehmen
+# Functional Specification: Transferring ABAP Packages into a Git Monorepo
 
-**Status:** Offen  
-**Stand:** Ergebnis der funktionalen Grill-me-Session; ergänzt um die Entscheidungen der technischen Session (siehe `specs/technical.md`).  
-**Umsetzung:** Noch nicht begonnen.
+**Status:** Open  
+**As of:** Result of the functional grill-me session; supplemented by the decisions of the technical session (see `specs/technical.md`).  
+**Implementation:** Not started yet.
 
-## 1. Ziel und Rahmen
+## 1. Goal and Scope
 
-### F-001 – SAP-GUI-Report
-**Status:** Offen
+### F-001 – SAP GUI Report
+**Status:** Open
 
-Ein einfacher SAP-GUI-Report übernimmt vorhandene ABAP-Pakete und ihre Objekte in ein gemeinsames Git-Monorepo. Im SAP-System entsteht pro Komponente ein separates abapGit-Repository; alle verwenden dieselbe Remote-URL.
+A simple SAP GUI report transfers existing ABAP packages and their objects into a shared Git monorepo. In the SAP system, a separate abapGit repository is created per component; all of them use the same remote URL.
 
-### F-002 – Entwicklungsrahmen
-**Status:** Offen
+### F-002 – Development Framework
+**Status:** Open
 
-Die Entwicklung erfolgt mittels ARC-1 auf dem lokalen SAP-System. Vor der technischen Session installiert der Anwender die abapGit Developer Edition. Die funktionale Spezifikation legt noch keine konkrete API- oder Implementierungslösung fest.
+Development is done using ARC-1 on the local SAP system. Before the technical session, the user installs the abapGit Developer Edition. The functional specification does not yet define a concrete API or implementation solution.
 
-### F-003 – Vorhandene SAP-Inhalte
-**Status:** Offen
+### F-003 – Existing SAP Content
+**Status:** Open
 
-Die ausgewählten Pakete, Unterpakete und ABAP-Objekte existieren bereits. Der Report legt keine neuen ABAP-Pakete oder Fachobjekte an und verändert deren fachlichen Inhalt nicht.
+The selected packages, subpackages and ABAP objects already exist. The report does not create new ABAP packages or business objects and does not change their functional content.
 
-## 2. Eingaben
+## 2. Inputs
 
-### F-004 – ABAP-Pakete
-**Status:** Offen
+### F-004 – ABAP Packages
+**Status:** Open
 
-Die Paketauswahl ist obligatorisch und erfolgt über Select-Options. Einzelwerte, Wildcards, Intervalle und Ausschlüsse werden unterstützt.
+Package selection is mandatory and is done via select options. Single values, wildcards, intervals and exclusions are supported.
 
-### F-005 – Git-URL
-**Status:** Offen
+### F-005 – Git URL
+**Status:** Open
 
-Die Git-URL ist obligatorisch. Das Remote-Repository muss bereits existieren und mindestens eine Datei enthalten. Der Report legt kein Remote-Repository an.
+The Git URL is mandatory. The remote repository must already exist and contain at least one file. The report does not create a remote repository.
 
 ### F-006 – Folder Logic
-**Status:** Offen
+**Status:** Open
 
-Die Folder Logic ist obligatorisch. Zur Auswahl stehen die abapGit-Varianten PREFIX, FULL und MIXED.
+The folder logic is mandatory. The abapGit variants PREFIX, FULL and MIXED are available for selection.
 
 ### F-007 – Top Folder
-**Status:** Offen
+**Status:** Open
 
-Top Folder ist optional und bezeichnet einen relativen Pfad im Remote. Mehrere Pfadebenen, beispielsweise `abap/backend`, sind zulässig. Absolute Pfade und übergeordnete Pfadsegmente (`..`) sind unzulässig.
+Top folder is optional and denotes a relative path in the remote. Multiple path levels, for example `abap/backend`, are permitted. Absolute paths and parent path segments (`..`) are not permitted.
 
-## 3. Auswahl und Komponentenbildung
+## 3. Selection and Component Formation
 
-### F-008 – Vollständiger Paketbaum
-**Status:** Offen
+### F-008 – Complete Package Tree
+**Status:** Open
 
-Jedes als Komponentenwurzel ausgewählte Paket wird einschließlich seines vollständigen Unterpaketbaums verarbeitet.
+Each package selected as a component root is processed including its complete subpackage tree.
 
-### F-009 – Überlappende Auswahl
-**Status:** Offen
+### F-009 – Overlapping Selection
+**Status:** Open
 
-Nach Auflösung der gesamten Select-Options-Auswahl werden doppelte Treffer zusammengefasst. Sind ein Oberpaket und dessen Unterpakete ausgewählt, wird nur das oberste ausgewählte Paket als Komponentenwurzel verarbeitet. Die Zusammenfassung wird im Ergebnis kenntlich gemacht.
+After the entire select-options selection has been resolved, duplicate hits are merged. If a parent package and its subpackages are selected, only the topmost selected package is processed as the component root. The merge is made visible in the result.
 
-### F-010 – Bedeutung von Ausschlüssen
-**Status:** Offen
+### F-010 – Meaning of Exclusions
+**Status:** Open
 
-Ausschlüsse beeinflussen nur die Auswahl der Komponentenwurzeln, nicht den Inhalt eines ausgewählten Paketbaums. Beispiel: Wird `ZAPP` ausgewählt und sein Unterpaket `ZAPP_TEST` ausgeschlossen, bleibt `ZAPP_TEST` Bestandteil der Komponente `ZAPP`.
+Exclusions only affect the selection of the component roots, not the content of a selected package tree. Example: If `ZAPP` is selected and its subpackage `ZAPP_TEST` is excluded, `ZAPP_TEST` remains part of the component `ZAPP`.
 
-### F-011 – Auswahl ohne Treffer
-**Status:** Offen
+### F-011 – Selection Without Hits
+**Status:** Open
 
-Enthält die aufgelöste Auswahl keine vorhandenen Pakete, endet der Report mit einer deutlichen Ausgabe und ohne Änderungen, Branch oder PR. Nicht vorhandene Namen innerhalb einer ansonsten gültigen Auswahl verhindern die Verarbeitung vorhandener Pakete nicht.
+If the resolved selection contains no existing packages, the report ends with a clear output and without changes, branch or PR. Non-existent names within an otherwise valid selection do not prevent the processing of existing packages.
 
-### F-012 – Bestehende abapGit-Zuordnungen
-**Status:** Offen
+### F-012 – Existing abapGit Assignments
+**Status:** Open
 
-Ist eine Komponentenwurzel bereits einem abapGit-Repository zugeordnet oder überschneidet sich ihr Paketbaum mit einer bestehenden Repository-Zuordnung, wird die betroffene Komponente mit Fehlermeldung übersprungen. Bestehende Zuordnungen werden nicht verändert. Andere Komponenten werden weiterverarbeitet.
+If a component root is already assigned to an abapGit repository or its package tree overlaps with an existing repository assignment, the affected component is skipped with an error message. Existing assignments are not changed. Other components continue to be processed.
 
-## 4. Ordnerstruktur
+## 4. Folder Structure
 
-### F-013 – Startordner pro Komponente
-**Status:** Offen
+### F-013 – Starting Folder per Component
+**Status:** Open
 
-Der Startordner eines lokalen abapGit-Repositories lautet `/topFolder/component/src/`. Ohne Top Folder lautet er `/component/src/`.
+The starting folder of a local abapGit repository is `/topFolder/component/src/`. Without a top folder it is `/component/src/`.
 
-### F-014 – Komponentenname
-**Status:** Offen
+### F-014 – Component Name
+**Status:** Open
 
-Der Komponentenname wird aus dem vollständigen Top-Level-Paketnamen nach der vereinbarten FULL-nahen Namensnormalisierung gebildet: Ein führendes `$` entfällt, Namespace-Trennzeichen `/` werden durch `#` ersetzt und der Name wird kleingeschrieben.
+The component name is derived from the full top-level package name after the agreed FULL-like name normalization: A leading `$` is dropped, namespace separators `/` are replaced by `#`, and the name is converted to lowercase.
 
-| Root-Paket | Komponentenordner |
+| Root package | Component folder |
 | --- | --- |
 | `ZAPP` | `zapp` |
 | `/ACME/APP` | `#acme#app` |
 | `$APP` | `app` |
 
-Diese Regel ist eine ausdrücklich vereinbarte Ableitung für den Komponentenordner, nicht die automatische Abbildung des Root-Pakets durch die abapGit Folder Logic.
+This rule is an explicitly agreed derivation for the component folder, not the automatic mapping of the root package by the abapGit folder logic.
 
-### F-015 – Kollision von Komponentenpfaden
-**Status:** Offen
+### F-015 – Collision of Component Paths
+**Status:** Open
 
-Ergeben mehrere ausgewählte Komponenten denselben Komponentenpfad, werden alle betroffenen Komponenten als fehlerhaft übersprungen. Es gibt keine automatische Umbenennung oder Zusammenführung.
+If several selected components result in the same component path, all affected components are skipped as failed. There is no automatic renaming or merging.
 
-### F-016 – Unterpaketpfade
-**Status:** Offen
+### F-016 – Subpackage Paths
+**Status:** Open
 
-Die gewählte Folder Logic steuert die Unterpaketpfade unterhalb des Startordners. Das Root-Paket selbst liegt direkt im Startordner. Die tatsächliche Paket-Elternbeziehung bestimmt die Ordnerhierarchie.
+The chosen folder logic controls the subpackage paths below the starting folder. The root package itself lies directly in the starting folder. The actual package parent relationship determines the folder hierarchy.
 
-- **PREFIX:** Für ein Unterpaket wird der Namenspräfix des unmittelbaren Elternpakets entfernt. Fehlt dieser Präfix, entsteht ein Fehler.
-- **FULL:** Der vollständige Unterpaketname bildet das Ordnersegment; ein führendes `$` entfällt.
-- **MIXED:** Für jedes Unterpaket wird der Namenspräfix des Root-Pakets entfernt. Fehlt dieser Präfix, entsteht ein Fehler.
+- **PREFIX:** For a subpackage, the name prefix of the immediate parent package is removed. If this prefix is missing, an error occurs.
+- **FULL:** The full subpackage name forms the folder segment; a leading `$` is dropped.
+- **MIXED:** For each subpackage, the name prefix of the root package is removed. If this prefix is missing, an error occurs.
 
-Die weitere Normalisierung der Unterpaketsegmente richtet sich nach abapGit. Es wird keine eigene alternative Folder Logic implementiert.
+Further normalization of the subpackage segments follows abapGit. No custom alternative folder logic is implemented.
 
-Beispiel für `ZAPP → ZAPP_CORE → ZAPP_CORE_UTIL`, jeweils relativ zum Startordner:
+Example for `ZAPP → ZAPP_CORE → ZAPP_CORE_UTIL`, each relative to the starting folder:
 
-| Folder Logic | Unterpaketpfad |
+| Folder logic | Subpackage path |
 | --- | --- |
 | PREFIX | `core/util/` |
 | FULL | `zapp_core/zapp_core_util/` |
 | MIXED | `core/core_util/` |
 
-## 5. Branch, Repository-Anlage und Veröffentlichung
+## 5. Branch, Repository Creation and Publication
 
-### F-017 – Gemeinsamer Arbeitsbranch
-**Status:** Offen
+### F-017 – Shared Working Branch
+**Status:** Open
 
-Pro Lauf wird ein neuer, eindeutig benannter Arbeitsbranch verwendet. Basis und PR-Ziel ist der Default-Branch des Remotes. Es erfolgt kein direkter Push auf den Default-Branch.
+A new, uniquely named working branch is used per run. The base and PR target is the default branch of the remote. There is no direct push to the default branch.
 
-### F-018 – Offline-Anlage und Online-Umstellung
-**Status:** Offen
+### F-018 – Offline Creation and Online Switch
+**Status:** Open
 
-Pro Komponente wird zunächst ein Offline-Repository angelegt. Anschließend werden Startordner und Folder Logic gesetzt und das Repository auf ein Online-Repository mit gemeinsamer Remote-URL und gemeinsamem Arbeitsbranch umgestellt.
+An offline repository is created first for each component. Afterwards, the starting folder and folder logic are set and the repository is switched to an online repository with the shared remote URL and shared working branch.
 
-### F-019 – Inhalte übertragen
-**Status:** Offen
+### F-019 – Transferring Content
+**Status:** Open
 
-Die vorhandenen ABAP-Inhalte der Komponenten werden über abapGit in den gemeinsamen Arbeitsbranch übertragen. Git-Handling erfolgt über abapGit-APIs; die unterstützten Git-Anbieter richten sich nach abapGit, nicht nach einer eigenen Anbieterliste des Reports.
+The existing ABAP content of the components is transferred into the shared working branch via abapGit. Git handling is done via abapGit APIs; the supported Git providers follow abapGit, not a separate provider list of the report.
 
-*Ergänzung technische Session:* Übertragen werden nur neue und geänderte Dateien. Dateien, die nur im Remote innerhalb des Komponentenordners existieren, werden nicht gelöscht; ihre Anzahl wird in der Ergebnisliste ausgewiesen. Objekte, die abapGit nicht serialisieren kann, führen zu einem Teilerfolg der Komponente.
+*Addition from technical session:* Only new and changed files are transferred. Files that exist only in the remote within the component folder are not deleted; their number is shown in the result list. Objects that abapGit cannot serialize lead to a partial success of the component.
 
-### F-020 – Keine eigene Git-Konfliktbehandlung
-**Status:** Offen
+### F-020 – No Custom Git Conflict Handling
+**Status:** Open
 
-Der Report verwendet das reguläre Push-Verhalten von abapGit. Er führt weder Force-Pushes noch eine automatische Konfliktauflösung aus. Abgewiesene Pushes werden protokolliert; die Konfliktbehandlung übernimmt der Anwender in Git. Ein bereits vorhandener Komponentenordner im Remote ist allein kein Grund, eine Komponente zu überspringen. Eine gesonderte Aktualisierungs- oder Konfliktstrategie gehört nicht zum Umfang.
+The report uses the regular push behavior of abapGit. It performs neither force pushes nor automatic conflict resolution. Rejected pushes are logged; conflict handling is up to the user in Git. A component folder that already exists in the remote is not, by itself, a reason to skip a component. A separate update or conflict strategy is not in scope.
 
-### F-021 – Ein gemeinsamer PR
-**Status:** Offen
+### F-021 – One Shared PR
+**Status:** Open
 
-Pro Lauf entsteht genau ein gemeinsamer PR für die erfolgreich übertragenen Änderungen. Fehlgeschlagene Komponenten werden nicht als erfolgreich übernommen ausgewiesen. Sind keine Komponenten erfolgreich oder entstehen keine Git-Änderungen, wird kein PR erstellt.
+Exactly one shared PR is created per run for the successfully transferred changes. Failed components are not reported as successfully transferred. If no components are successful or no Git changes arise, no PR is created.
 
-*Ergänzung technische Session:* Automatische PR-Erstellung gibt es nur für `github.com`. Bei anderen Anbietern (einschließlich GitHub Enterprise Server) werden Repositories, Arbeitsbranch und Push wie bei GitHub ausgeführt, aber kein PR erstellt. Der Lauf gilt dann als Teilerfolg; die Ausgabe nennt den Branch mit dem Hinweis, den PR manuell anzulegen.
+*Addition from technical session:* Automatic PR creation exists only for `github.com`. For other providers (including GitHub Enterprise Server), repositories, working branch and push are executed as for GitHub, but no PR is created. The run is then considered a partial success; the output names the branch with a note to create the PR manually.
 
-### F-022 – PR-Inhalt und Freigabe
-**Status:** Offen
+### F-022 – PR Content and Approval
+**Status:** Open
 
-Der PR wird normal, nicht als Draft, angelegt. Titel und Beschreibung werden automatisch erzeugt. Die Beschreibung fasst erfolgreiche, fehlgeschlagene und übersprungene Komponenten zusammen. Reviewer-Zuweisung, Review, Freigabe und Merge erfolgen manuell. Der Report führt keinen Merge durch.
+The PR is created as a normal PR, not as a draft. Title and description are generated automatically. The description summarizes successful, failed and skipped components. Reviewer assignment, review, approval and merge are done manually. The report does not perform a merge.
 
-### F-023 – Zustand nach PR-Erstellung
-**Status:** Offen
+### F-023 – State After PR Creation
+**Status:** Open
 
-Die lokalen abapGit-Repositories bleiben nach dem Lauf auf dem Arbeitsbranch. Der Report wartet nicht auf den Merge und überwacht ihn nicht. Nach dem Merge stellt der Anwender die Repositories selbst auf den Default-Branch um.
+The local abapGit repositories remain on the working branch after the run. The report does not wait for the merge and does not monitor it. After the merge, the user switches the repositories to the default branch themselves.
 
-### F-024 – Dauerhafte getrennte Nutzung
-**Status:** Offen
+### F-024 – Permanent Separate Use
+**Status:** Open
 
-Die getrennten lokalen Repositories müssen auch nach dem Merge dauerhaft für ihre jeweilige Komponente nutzbar sein, einschließlich Status, Pull und Push. Eine nur einmalig korrekte PR-Erstellung reicht nicht aus.
+The separate local repositories must remain permanently usable for their respective component even after the merge, including status, pull and push. A PR that is merely created correctly once is not sufficient.
 
-*Ergänzung technische Session:* Startordner und Folder Logic werden nur in den lokalen abapGit-Repositories gehalten; die Datei `/.abapgit.xml` im Remote wird vom Report weder gelesen noch geschrieben. Wer das Monorepo auf einem anderen System verbindet, muss Startordner, Folder Logic und den Ausschluss von `/.abapgit.xml` dort selbst setzen.
+*Addition from technical session:* The starting folder and folder logic are kept only in the local abapGit repositories; the file `/.abapgit.xml` in the remote is neither read nor written by the report. Anyone connecting the monorepo on another system must set the starting folder, folder logic and the exclusion of `/.abapgit.xml` there themselves.
 
-## 6. Fehler und Teilerfolge
+## 6. Errors and Partial Successes
 
-### F-025 – Komponentenbezogene Fehler
-**Status:** Offen
+### F-025 – Component-Related Errors
+**Status:** Open
 
-Der Lauf verarbeitet, was möglich ist. Ein komponentenbezogener Fehler verhindert nicht die Verarbeitung anderer Komponenten. Gemeinsame Fehler, beispielsweise ein nicht erreichbares Remote, können die weitere Veröffentlichung verhindern.
+The run processes what is possible. A component-related error does not prevent the processing of other components. Common errors, for example an unreachable remote, may prevent further publication.
 
-### F-026 – Keine automatische Rücknahme
-**Status:** Offen
+### F-026 – No Automatic Rollback
+**Status:** Open
 
-Bereits angelegte lokale Repositories und erfolgreiche Git-Schritte bleiben bei späteren Fehlern bestehen. Das gilt auch, wenn die Online-Umstellung oder der Push einer Komponente scheitert. Der erreichte Zustand wird ausgegeben; eine Bereinigung erfolgt manuell.
+Already created local repositories and successful Git steps remain in place in case of later errors. This also applies if the online switch or the push of a component fails. The state reached is output; cleanup is done manually.
 
-### F-027 – PR-Erstellung schlägt fehl
-**Status:** Offen
+### F-027 – PR Creation Fails
+**Status:** Open
 
-Sind Änderungen bereits gepusht, aber die PR-Erstellung scheitert, bleiben Branch, Änderungen und lokale Repositories erhalten. Die Ausgabe nennt Branch und Fehler, damit der Anwender den PR manuell erstellen kann. Ein Push ohne erforderlichen PR ist kein vollständig erfolgreicher Gesamtlauf.
+If changes have already been pushed but PR creation fails, the branch, changes and local repositories are retained. The output names the branch and the error so that the user can create the PR manually. A push without the required PR is not a fully successful overall run.
 
-### F-028 – Keine automatische Wiederaufnahme
-**Status:** Offen
+### F-028 – No Automatic Resumption
+**Status:** Open
 
-Eine automatische Wiederaufnahme früherer Läufe gehört nicht zum Umfang. Ein erneuter Lauf überspringt bereits zugeordnete Pakete gemäß F-012. Manuelle Bereinigung oder Fortsetzung liegt beim Anwender.
+Automatic resumption of earlier runs is not in scope. A repeated run skips already assigned packages in accordance with F-012. Manual cleanup or continuation is up to the user.
 
-## 7. Ausgabe und Anmeldung
+## 7. Output and Login
 
-### F-029 – Einfache Ergebnisliste
-**Status:** Offen
+### F-029 – Simple Result List
+**Status:** Open
 
-Am Ende wird eine einfache, farbige WRITE-Ausgabe angezeigt. Pro Komponente enthält sie Paket, Komponentenpfad, erreichten Verarbeitungsschritt, Erfolg beziehungsweise Fehler oder Überspringen sowie eine verständliche Begründung. Auch Teilerfolge und bestehende Zuordnungen sind erkennbar.
+At the end, a simple, colored WRITE output is displayed. For each component it contains the package, component path, processing step reached, success or error or skipped, and an understandable reason. Partial successes and existing assignments are also recognizable.
 
-### F-030 – Zusammenfassung
-**Status:** Offen
+### F-030 – Summary
+**Status:** Open
 
-Die Ausgabe enthält eine Zusammenfassung sowie den Arbeitsbranch und, falls erstellt, den PR-Link. Eine persistente Laufhistorie oder zusätzliche Protokollverwaltung ist nicht vorgesehen.
+The output contains a summary as well as the working branch and, if created, the PR link. A persistent run history or additional log management is not planned.
 
-### F-031 – Authentifizierung und Zugangsdaten
-**Status:** Offen
+### F-031 – Authentication and Credentials
+**Status:** Open
 
-Die Anmeldung erfolgt über abapGit-APIs. Zugangsdaten werden nicht als Reportparameter, in Varianten oder im Protokoll gespeichert. Fehlende Berechtigungen werden als verständlicher Fehler des betroffenen Schritts ausgegeben.
+Login is done via abapGit APIs. Credentials are not stored as report parameters, in variants or in the log. Missing authorizations are output as an understandable error of the affected step.
 
-*Ergänzung technische Session:* Die Anmeldung erfolgt über das Login-Popup von abapGit (Benutzer und Passwort bzw. Personal Access Token) zu Beginn des Laufs. Der Report ist deshalb nur im Dialog ausführbar; ein Start im Hintergrund wird mit einer Meldung abgelehnt.
+*Addition from technical session:* Login is done via the abapGit login popup (user and password or personal access token) at the start of the run. The report can therefore only be executed in dialog; a start in the background is rejected with a message.
 
-## 8. Noch technisch nachzuweisen
+## 8. Still to Be Verified Technically
 
-### F-032 – APIs der Developer Edition
-**Status:** Offen
+### F-032 – Developer Edition APIs
+**Status:** Open
 
-Nach Installation der abapGit Developer Edition sind die API-Unterstützung für den gesamten Ablauf einschließlich PR-Erstellung sowie die dauerhafte Trennung mehrerer Komponenten bei gleicher Remote-URL zu prüfen. Die funktionalen Anforderungen sind dadurch noch nicht technisch bestätigt. Fehlende PR-Unterstützung darf nicht stillschweigend durch einen reinen Push ersetzt werden.
+After installing the abapGit Developer Edition, the API support for the entire flow including PR creation, as well as the permanent separation of several components with the same remote URL, must be verified. The functional requirements are therefore not yet technically confirmed. Missing PR support must not be silently replaced by a plain push.
 
-Die lesende Vorprüfung der bisherigen Standalone-Version 1.128.0 belegte Branch-Erstellung und Push, aber keine PR-Erstellung. Außerdem wurde ein möglicher Konflikt zwischen gemeinsamer Remote-Konfiguration `/.abapgit.xml` und unterschiedlichen lokalen Startordnern gefunden. Diese Befunde sind keine Aussage über die noch zu installierende Developer Edition.
+The read-only preliminary check of the previous standalone version 1.128.0 demonstrated branch creation and push, but not PR creation. In addition, a possible conflict was found between the shared remote configuration `/.abapgit.xml` and different local starting folders. These findings are not a statement about the Developer Edition that is still to be installed.
 
-*Ergebnis technische Session (Developer Edition, lesend geprüft):* Branch-Anlage und Push sind über abapGit-APIs möglich. Eine PR-Erstellung bietet abapGit nur rudimentär für GitHub (immer als Entwurf, ohne Rückgabe des Links); der Report erstellt den PR daher mit eigenem Code auf Basis der HTTP-, Anmelde- und JSON-Bausteine von abapGit (T-026). Der `/.abapgit.xml`-Konflikt wird über die lokale abapGit-Einstellung `exclude_remote_paths` gelöst (T-023). Der Nachweis gegen ein echtes Remote steht noch aus.
+*Result of technical session (Developer Edition, checked read-only):* Branch creation and push are possible via abapGit APIs. abapGit offers PR creation only rudimentarily for GitHub (always as a draft, without returning the link); the report therefore creates the PR with its own code based on the HTTP, login and JSON building blocks of abapGit (T-026). The `/.abapgit.xml` conflict is solved via the local abapGit setting `exclude_remote_paths` (T-023). Verification against a real remote is still pending.
 
-## 9. Vom Anwender genannter Umgebungskontext
+## 9. Environment Context Stated by the User
 
-Die folgenden Angaben dokumentieren die genannte Umgebung; daraus ergibt sich keine zusätzliche Kompatibilitätszusage:
+The following details document the stated environment; no additional compatibility commitment results from them:
 
 ```text
 SAP GUI for Java 8.10 rev 8
