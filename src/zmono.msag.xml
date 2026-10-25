@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZMONO</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>ABAP monorepo import</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>&amp;1&amp;2&amp;3&amp;4</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Package &amp;1 is already part of abapGit repository &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Package tree of &amp;1 contains package &amp;2 of abapGit repository &amp;3</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Component path &amp;1 is used by several components</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Folder logic &amp;1 cannot be applied to package &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Creating the abapGit repository for &amp;1 failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Configuring the abapGit repository for &amp;1 failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Switching abapGit repository &amp;1 online failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Creating branch &amp;1 failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Selecting branch &amp;1 failed for abapGit repository &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>Push failed for component &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>Remote &amp;1 cannot be read</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>Remote &amp;1 has no default branch (empty repository?)</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>Login to &amp;1 was cancelled</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>Pull request creation failed: HTTP &amp;1 &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>Git URL &amp;1 is invalid</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>016</MSGNR>
+     <TEXT>Top folder &amp;1 must be a relative path</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>No existing package matches the selection</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>018</MSGNR>
+     <TEXT>The report can only run in dialog mode</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>019</MSGNR>
+     <TEXT>Reading the package hierarchy of &amp;1 failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>020</MSGNR>
+     <TEXT>Reading the abapGit repositories failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>022</MSGNR>
+     <TEXT>Pull request creation failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>023</MSGNR>
+     <TEXT>Not processed because the run was stopped</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>024</MSGNR>
+     <TEXT>Top folder &amp;1 must not contain empty, &apos;.&apos; or &apos;..&apos; segments</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>025</MSGNR>
+     <TEXT>Top folder &amp;1 must not contain backslashes</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>026</MSGNR>
+     <TEXT>Login to &amp;1 failed after &amp;2 attempts</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>027</MSGNR>
+     <TEXT>Login to &amp;1 failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>030</MSGNR>
+     <TEXT>&amp;1 remote file(s) without SAP counterpart were not deleted</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>031</MSGNR>
+     <TEXT>&amp;1 serialization warning(s): &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>032</MSGNR>
+     <TEXT>No changes to push</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>040</MSGNR>
+     <TEXT>No changes were pushed, no pull request created</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMONO</ARBGB>
+     <MSGNR>041</MSGNR>
+     <TEXT>Provider without pull request support: create PR for branch &amp;1 manually</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>
