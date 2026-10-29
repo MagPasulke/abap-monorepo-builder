@@ -1,18 +1,4 @@
-// abaplint configuration for ARC-1 (SAP_ABAPLINT_CONFIG in ~/.config/arc-1/.env).
-// Replaces the ARC-1 built-in "onprem" preset completely, so every rule carries its
-// full abaplint default configuration (abaplint does not merge missing options).
-// Basis: preset rules/severities from SAPLint(list_rules), 2026-10-25 (ABAP 816 / v758),
-// option defaults from rules.abaplint.org. Project deviations:
-//   - all 25 rules disabled in the preset are enabled, except description_empty
-//     (needs the class XML file, which ARC-1 does not pass; description is mandatory on create)
-//   - no_prefixes enabled (Clean ABAP)
-//   - naming rules (local_variable_names, method_parameter_names, class_attribute_names,
-//     types_naming) FORBID Hungarian prefixes instead of requiring them
-//   - object_naming requires ZCL_MONO_/ZCX_MONO_/ZIF_MONO_/ZMONO_, local_class_naming allows LTD_
-//   - forbidden_void_type: FLAG, XFELD, CHAR1, BOOLEAN, BOOLE_D, SAP_BOOL (use abap_bool)
-//   - check_include excludes report zmono_import (includes abapGit ZABAPGIT_PASSWORD_DIALOG)
-//   - errorNamespace contains local prefixes only: ARC-1 lints single files, so all global
-//     objects (own and abapGit) are void; their existence is checked by the SAP syntax check
+// abaplint configuration
 {
   "global": {
     "files": "/src/**/*.*"
