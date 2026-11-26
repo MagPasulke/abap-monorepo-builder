@@ -31,6 +31,14 @@ On-ramps: `/triage` for incoming issues, `/diagnosing-bugs` for hard bugs, `/way
 - Known red: `ltcl_importer->imports_all_components` fails off-stack due to a transpiler bug with `BEGIN OF ENUM … STRUCTURE` (abaplint/transpiler#2280). It passes on SAP.
 - The authoritative check is ABAP Unit and syntax on the SAP system, see SAP sync.
 
+## ABAP documentation
+
+Research ABAP language, SAP APIs and released objects with the `sap-docs-abap` MCP server (`https://mcp-abap.marianzeis.de/mcp`).
+
+## SAP system access
+
+The ARC-1 MCP server (`sap-trial`) connects to the local SAP system. Use it to look things up directly on the system: read sources, search objects, check syntax, run ATC and ABAP Unit, inspect dumps. Lint runs with this project's `abaplint.jsonc`.
+
 ## SAP sync
 
 Custom tools in `.opencode/tools/` connect to the SAP system via ADT, using credentials from `.env` (template `.env.example`):

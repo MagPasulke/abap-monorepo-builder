@@ -38,6 +38,8 @@ Clone this repository with abapGit into the local package `$ZABAPMONOREPO` and a
 
 Run report `ZMONO_IMPORT` in dialog (background runs are rejected):
 
+![Selection screen of ZMONO_IMPORT](assets/readme/selection-screen.png)
+
 | Field | Description |
 |---|---|
 | Packages | Root packages: single values, wildcards, intervals, exclusions |
@@ -46,16 +48,3 @@ Run report `ZMONO_IMPORT` in dialog (background runs are rejected):
 | Top folder | Optional relative path in the remote, e.g. `abap/backend` |
 
 At the start the abapGit login popup asks for user and password or token. After the PR is merged, switch the repositories to the default branch yourself.
-
-## Development
-
-```sh
-npm ci
-npm test   # abaplint, TypeScript typecheck, ABAP Unit transpiled to JavaScript
-```
-
-The unit tests run off-stack via the [abaplint transpiler](https://github.com/abaplint/transpiler). One test (`ltcl_importer->imports_all_components`) currently fails off-stack because of a transpiler bug, see abaplint/transpiler#2280; it passes on SAP.
-
-Syncing to the SAP system and running ABAP Unit there is done with the opencode tools in `.opencode/tools/` (`adt_gitpull`, `adt_checkerrors`, `adt_rununit`). Copy `.env.example` to `.env` and fill in the SAP connection.
-
-Agent workflow and architecture notes: [`AGENTS.md`](AGENTS.md).
