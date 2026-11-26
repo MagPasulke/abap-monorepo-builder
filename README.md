@@ -2,7 +2,7 @@
 
 SAP GUI report that moves existing ABAP packages into one shared Git monorepo using abapGit. Each selected package (with its subpackages) becomes its own abapGit repository, but all of them point to the same remote. The report pushes all components to a new working branch and opens one pull request on GitHub.
 
-> **Status:** implemented and unit-tested, but not yet verified end to end against a real remote repository.
+> **Status:** MVP, end-to-end tested once (folder logic FULL, GitHub). Further scenarios are open, see [#4](https://github.com/MagPasulke/abap-monorepo-builder/issues/4).
 
 ## How it works
 
