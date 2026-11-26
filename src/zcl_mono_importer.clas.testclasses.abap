@@ -9,12 +9,12 @@ CLASS ltd_package_source DEFINITION FINAL.
 
   PRIVATE SECTION.
     TYPES:
-      BEGIN OF package_entry,
+      BEGIN OF ty_package_entry,
         package_name TYPE devclass,
         parent       TYPE devclass,
-      END OF package_entry.
+      END OF ty_package_entry.
 
-    DATA packages TYPE STANDARD TABLE OF package_entry WITH EMPTY KEY.
+    DATA packages TYPE STANDARD TABLE OF ty_package_entry WITH EMPTY KEY.
 
 ENDCLASS.
 
@@ -46,7 +46,7 @@ CLASS ltd_package_source IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_mono_package_source~get_sub_packages.
-    DATA entry TYPE package_entry.
+    DATA entry TYPE ty_package_entry.
 
     LOOP AT packages INTO entry WHERE parent = package_name.
       INSERT entry-package_name INTO TABLE result.
@@ -78,10 +78,10 @@ CLASS ltd_repo_gateway DEFINITION FINAL.
       RETURNING VALUE(result) TYPE i.
 
   PRIVATE SECTION.
-    DATA assignments TYPE zif_mono_types=>repo_assignments.
-    DATA failing_pushes TYPE zif_mono_types=>package_names.
-    DATA checked_components TYPE zif_mono_types=>package_names.
-    DATA configured_repositories TYPE STANDARD TABLE OF zif_mono_types=>repo_key WITH EMPTY KEY.
+    DATA assignments TYPE zif_mono_types=>ty_repo_assignments.
+    DATA failing_pushes TYPE zif_mono_types=>ty_package_names.
+    DATA checked_components TYPE zif_mono_types=>ty_package_names.
+    DATA configured_repositories TYPE STANDARD TABLE OF zif_mono_types=>ty_repo_key WITH EMPTY KEY.
     DATA created_branches TYPE i.
     DATA selected_branches TYPE i.
     DATA online_count TYPE i.
@@ -263,11 +263,8 @@ CLASS ltcl_importer IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD run.
-    DATA client TYPE REF TO zif_mono_pr_client.
-
-    IF with_pr_client = abap_true.
-      client = pr_client.
-    ENDIF.
+    DATA(client) = COND #( WHEN with_pr_client = abap_true
+                           THEN pr_client ).
     DATA(cut) = NEW zcl_mono_importer( package_source = package_source
                                        repo_gateway   = repo_gateway
                                        remote_gateway = remote_gateway
@@ -302,7 +299,7 @@ CLASS ltcl_importer IMPLEMENTATION.
     cl_abap_unit_assert=>assert_true( xsdbool( pr_client->get_head( ) CP `abap-import/*` ) ).
     cl_abap_unit_assert=>assert_equals(
       exp = `https://github.com/acme/mono/pull/1`
-      act = result->get_run_info( )-pr_url ).
+      act = result->get_run_info( )-pull_request_url ).
     cl_abap_unit_assert=>assert_false( remote_gateway->is_connected( ) ).
   ENDMETHOD.
 
@@ -333,19 +330,19 @@ CLASS ltcl_importer IMPLEMENTATION.
       exp = zif_mono_types=>statuses-failed
       act = app-status ).
     cl_abap_unit_assert=>assert_equals(
-      exp = zif_mono_types=>steps-on_branch
+      exp = zif_mono_types=>steps-branch_selected
       act = app-step ).
     cl_abap_unit_assert=>assert_equals(
       exp = zif_mono_types=>statuses-success
       act = result->get_status( 'ZLIB' ) ).
-    cl_abap_unit_assert=>assert_not_initial( result->get_run_info( )-pr_url ).
+    cl_abap_unit_assert=>assert_not_initial( result->get_run_info( )-pull_request_url ).
   ENDMETHOD.
 
   METHOD no_pr_without_client.
     DATA(result) = run( with_pr_client = abap_false ).
 
-    cl_abap_unit_assert=>assert_initial( result->get_run_info( )-pr_url ).
-    cl_abap_unit_assert=>assert_not_initial( result->get_run_info( )-pr_hint ).
+    cl_abap_unit_assert=>assert_initial( result->get_run_info( )-pull_request_url ).
+    cl_abap_unit_assert=>assert_not_initial( result->get_run_info( )-pull_request_hint ).
     cl_abap_unit_assert=>assert_equals(
       exp = zif_mono_types=>statuses-partial
       act = result->get_overall_status( ) ).

@@ -15,19 +15,19 @@ CLASS zcl_mono_importer DEFINITION
 
     "! Runs the import and returns its result
     METHODS run
-      IMPORTING parameters    TYPE zif_mono_types=>run_parameters
+      IMPORTING parameters    TYPE zif_mono_types=>ty_run_parameters
       RETURNING VALUE(result) TYPE REF TO zcl_mono_result.
 
   PRIVATE SECTION.
-    TYPES package_set TYPE HASHED TABLE OF devclass WITH UNIQUE KEY table_line.
+    TYPES ty_package_set TYPE HASHED TABLE OF devclass WITH UNIQUE KEY table_line.
 
     DATA package_source TYPE REF TO zif_mono_package_source.
     DATA repo_gateway TYPE REF TO zif_mono_repo_gateway.
     DATA remote_gateway TYPE REF TO zif_mono_remote_gateway.
     DATA pr_client TYPE REF TO zif_mono_pr_client.
     DATA progress TYPE REF TO zif_abapgit_progress.
-    DATA parameters TYPE zif_mono_types=>run_parameters.
-    DATA components TYPE zif_mono_types=>components.
+    DATA parameters TYPE zif_mono_types=>ty_run_parameters.
+    DATA components TYPE zif_mono_types=>ty_components.
     DATA path_builder TYPE REF TO zcl_mono_path_builder.
     DATA run_result TYPE REF TO zcl_mono_result.
     DATA branch_created TYPE abap_bool.
@@ -41,8 +41,8 @@ CLASS zcl_mono_importer DEFINITION
       RAISING zcx_mono_global_error.
 
     METHODS find_overlap
-      IMPORTING component     TYPE zif_mono_types=>component
-                assignments   TYPE zif_mono_types=>repo_assignments
+      IMPORTING component     TYPE zif_mono_types=>ty_component
+                assignments   TYPE zif_mono_types=>ty_repo_assignments
       RETURNING VALUE(result) TYPE string.
 
     METHODS check_folder_logic.
@@ -54,7 +54,7 @@ CLASS zcl_mono_importer DEFINITION
       RAISING zcx_mono_global_error.
 
     METHODS import_component
-      IMPORTING component TYPE zif_mono_types=>component
+      IMPORTING component TYPE zif_mono_types=>ty_component
       RAISING   zcx_mono_component_error
                 zcx_mono_global_error.
 
@@ -66,7 +66,7 @@ CLASS zcl_mono_importer DEFINITION
 
     METHODS reach
       IMPORTING root_package TYPE devclass
-                step         TYPE zif_mono_types=>step.
+                step         TYPE zif_mono_types=>ty_step.
 
     METHODS is_pending
       IMPORTING root_package  TYPE devclass
@@ -118,7 +118,7 @@ CLASS zcl_mono_importer IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD resolve_components.
-    DATA component TYPE zif_mono_types=>component.
+    DATA component TYPE zif_mono_types=>ty_component.
 
     components = NEW zcl_mono_package_resolver( package_source )->resolve( parameters-packages ).
     path_builder = NEW #( parameters-top_folder ).
@@ -131,7 +131,7 @@ CLASS zcl_mono_importer IMPLEMENTATION.
   METHOD check_path_collisions.
     DATA reason TYPE string.
     DATA collision_path TYPE string.
-    DATA component TYPE zif_mono_types=>component.
+    DATA component TYPE zif_mono_types=>ty_component.
 
     LOOP AT path_builder->find_path_collisions( components ) INTO collision_path.
       MESSAGE e003(zmono) WITH collision_path INTO reason.
@@ -143,7 +143,7 @@ CLASS zcl_mono_importer IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_existing_repositories.
-    DATA component TYPE zif_mono_types=>component.
+    DATA component TYPE zif_mono_types=>ty_component.
     DATA reason TYPE string.
 
     DATA(assignments) = repo_gateway->list_repositories( ).
@@ -163,9 +163,9 @@ CLASS zcl_mono_importer IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD find_overlap.
-    DATA assignment TYPE zif_mono_types=>repo_assignment.
+    DATA assignment TYPE zif_mono_types=>ty_repo_assignment.
 
-    DATA(tree) = VALUE package_set( ( component-root_package )
+    DATA(tree) = VALUE ty_package_set( ( component-root_package )
                                     ( LINES OF component-sub_packages ) ).
 
     LOOP AT assignments INTO assignment.
@@ -182,8 +182,7 @@ CLASS zcl_mono_importer IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_folder_logic.
-    DATA component TYPE zif_mono_types=>component.
-    DATA error TYPE REF TO zcx_mono_component_error.
+    DATA component TYPE zif_mono_types=>ty_component.
 
     LOOP AT components INTO component.
       IF is_pending( component-root_package ) = abap_false.
@@ -194,7 +193,7 @@ CLASS zcl_mono_importer IMPLEMENTATION.
                                             folder_logic = parameters-folder_logic ).
           reach( root_package = component-root_package
                  step         = zif_mono_types=>steps-checked ).
-        CATCH zcx_mono_component_error INTO error.
+        CATCH zcx_mono_component_error INTO DATA(error).
           fail( root_package = component-root_package
                 reason       = error->get_full_text( ) ).
       ENDTRY.
@@ -208,11 +207,9 @@ CLASS zcl_mono_importer IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD import_components.
-    DATA current TYPE i.
-    DATA component TYPE zif_mono_types=>component.
-    DATA error TYPE REF TO zcx_mono_component_error.
-    DATA global_error TYPE REF TO zcx_mono_global_error.
+    DATA component TYPE zif_mono_types=>ty_component.
 
+    DATA(current) = 0.
     IF progress IS BOUND.
       progress->set_total( run_result->count_status( zif_mono_types=>statuses-pending ) ).
     ENDIF.
@@ -226,10 +223,10 @@ CLASS zcl_mono_importer IMPLEMENTATION.
                      text    = |{ component-root_package }| ).
       TRY.
           import_component( component ).
-        CATCH zcx_mono_component_error INTO error.
+        CATCH zcx_mono_component_error INTO DATA(error).
           fail( root_package = component-root_package
                 reason       = error->get_full_text( ) ).
-        CATCH zcx_mono_global_error INTO global_error.
+        CATCH zcx_mono_global_error INTO DATA(global_error).
           fail( root_package = component-root_package
                 reason       = global_error->get_full_text( ) ).
           RAISE EXCEPTION global_error.
@@ -266,7 +263,7 @@ CLASS zcl_mono_importer IMPLEMENTATION.
                                    branch   = run_info-branch ).
     ENDIF.
     reach( root_package = root_package
-           step         = zif_mono_types=>steps-on_branch ).
+           step         = zif_mono_types=>steps-branch_selected ).
 
     run_result->set_push_result( root_package = root_package
                                  push_result  = repo_gateway->push( repo_key  = repo_key

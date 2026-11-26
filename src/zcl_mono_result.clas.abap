@@ -16,23 +16,23 @@ CLASS zcl_mono_result DEFINITION
 
     "! Adds a resolved component with status pending
     METHODS add_component
-      IMPORTING component TYPE zif_mono_types=>component.
+      IMPORTING component TYPE zif_mono_types=>ty_component.
 
     "! Records the step a component has reached
     METHODS set_step
       IMPORTING root_package TYPE devclass
-                step         TYPE zif_mono_types=>step.
+                step         TYPE zif_mono_types=>ty_step.
 
     "! Completes a component with a final status and reason
     METHODS complete
       IMPORTING root_package TYPE devclass
-                status       TYPE zif_mono_types=>status
+                status       TYPE zif_mono_types=>ty_status
                 reason       TYPE string.
 
     "! Records the outcome of a push and completes the component
     METHODS set_push_result
       IMPORTING root_package TYPE devclass
-                push_result  TYPE zif_mono_types=>push_result.
+                push_result  TYPE zif_mono_types=>ty_push_result.
 
     "! Marks all pending components as skipped
     METHODS skip_pending
@@ -41,11 +41,11 @@ CLASS zcl_mono_result DEFINITION
     "! Returns the status of a component
     METHODS get_status
       IMPORTING root_package  TYPE devclass
-      RETURNING VALUE(result) TYPE zif_mono_types=>status.
+      RETURNING VALUE(result) TYPE zif_mono_types=>ty_status.
 
     "! Returns the number of components with a status
     METHODS count_status
-      IMPORTING wanted_status TYPE zif_mono_types=>status
+      IMPORTING wanted_status TYPE zif_mono_types=>ty_status
       RETURNING VALUE(result) TYPE i.
 
     "! Returns true if at least one component was pushed with changes
@@ -54,11 +54,11 @@ CLASS zcl_mono_result DEFINITION
 
     "! Returns all component results
     METHODS get_components
-      RETURNING VALUE(result) TYPE zif_mono_types=>component_results.
+      RETURNING VALUE(result) TYPE zif_mono_types=>ty_component_results.
 
     "! Returns branch, pull request and error information of the run
     METHODS get_run_info
-      RETURNING VALUE(result) TYPE zif_mono_types=>run_info.
+      RETURNING VALUE(result) TYPE zif_mono_types=>ty_run_info.
 
     "! Sets the working branch
     METHODS set_branch
@@ -86,7 +86,7 @@ CLASS zcl_mono_result DEFINITION
 
     "! Returns the overall status of the run
     METHODS get_overall_status
-      RETURNING VALUE(result) TYPE zif_mono_types=>status.
+      RETURNING VALUE(result) TYPE zif_mono_types=>ty_status.
 
     "! Returns the pull request title
     METHODS build_pr_title
@@ -97,8 +97,8 @@ CLASS zcl_mono_result DEFINITION
       RETURNING VALUE(result) TYPE string.
 
   PRIVATE SECTION.
-    DATA components TYPE zif_mono_types=>component_results.
-    DATA run_info TYPE zif_mono_types=>run_info.
+    DATA components TYPE zif_mono_types=>ty_component_results.
+    DATA run_info TYPE zif_mono_types=>ty_run_info.
 
     CLASS-METHODS escape_markdown
       IMPORTING text          TYPE string
@@ -106,18 +106,18 @@ CLASS zcl_mono_result DEFINITION
 
     METHODS get_entry
       IMPORTING root_package  TYPE devclass
-      RETURNING VALUE(result) TYPE REF TO zif_mono_types=>component_result.
+      RETURNING VALUE(result) TYPE REF TO zif_mono_types=>ty_component_result.
 
     METHODS count_pushed
       RETURNING VALUE(result) TYPE i.
 
     METHODS build_section
       IMPORTING title         TYPE string
-                wanted_status TYPE zif_mono_types=>status
+                wanted_status TYPE zif_mono_types=>ty_status
       RETURNING VALUE(result) TYPE string.
 
     CLASS-METHODS build_row
-      IMPORTING entry         TYPE zif_mono_types=>component_result
+      IMPORTING entry         TYPE zif_mono_types=>ty_component_result
       RETURNING VALUE(result) TYPE string.
 
 ENDCLASS.
@@ -161,7 +161,7 @@ CLASS zcl_mono_result IMPLEMENTATION.
     entry->warnings = push_result-warnings.
     entry->step = COND #( WHEN push_result-changed = abap_true
                           THEN zif_mono_types=>steps-pushed
-                          ELSE zif_mono_types=>steps-no_changes ).
+                          ELSE zif_mono_types=>steps-unchanged ).
     entry->status = COND #( WHEN push_result-warnings > 0
                             THEN zif_mono_types=>statuses-partial
                             ELSE zif_mono_types=>statuses-success ).
@@ -183,7 +183,7 @@ CLASS zcl_mono_result IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD skip_pending.
-    DATA entry TYPE REF TO zif_mono_types=>component_result.
+    DATA entry TYPE REF TO zif_mono_types=>ty_component_result.
 
     LOOP AT components REFERENCE INTO entry WHERE status = zif_mono_types=>statuses-pending.
       entry->status = zif_mono_types=>statuses-skipped.
@@ -192,7 +192,8 @@ CLASS zcl_mono_result IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_status.
-    result = get_entry( root_package )->status.
+    DATA(entry) = get_entry( root_package ).
+    result = entry->status.
   ENDMETHOD.
 
   METHOD count_status.
@@ -222,15 +223,15 @@ CLASS zcl_mono_result IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD set_pr_url.
-    run_info-pr_url = url.
+    run_info-pull_request_url = url.
   ENDMETHOD.
 
   METHOD set_pr_error.
-    run_info-pr_error = error.
+    run_info-pull_request_error = error.
   ENDMETHOD.
 
   METHOD set_pr_hint.
-    run_info-pr_hint = hint.
+    run_info-pull_request_hint = hint.
   ENDMETHOD.
 
   METHOD set_global_error.
@@ -241,7 +242,7 @@ CLASS zcl_mono_result IMPLEMENTATION.
     DATA(succeeded) = count_status( zif_mono_types=>statuses-success ).
     DATA(partially_succeeded) = count_status( zif_mono_types=>statuses-partial ).
     DATA(all_succeeded) = xsdbool( lines( components ) = succeeded ).
-    DATA(pr_missing) = xsdbool( has_pushed_components( ) = abap_true AND run_info-pr_url IS INITIAL ).
+    DATA(pr_missing) = xsdbool( has_pushed_components( ) = abap_true AND run_info-pull_request_url IS INITIAL ).
 
     IF run_info-global_error IS NOT INITIAL OR succeeded + partially_succeeded = 0.
       result = zif_mono_types=>statuses-failed.

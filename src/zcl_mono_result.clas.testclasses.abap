@@ -52,7 +52,7 @@ CLASS ltcl_result IMPLEMENTATION.
     DATA(components) = cut->get_components( ).
     DATA(entry) = components[ root_package = 'ZAPP' ].
     cl_abap_unit_assert=>assert_equals(
-      exp = zif_mono_types=>steps-no_changes
+      exp = zif_mono_types=>steps-unchanged
       act = entry-step ).
     cl_abap_unit_assert=>assert_false( cut->has_pushed_components( ) ).
   ENDMETHOD.

@@ -1,0 +1,29 @@
+{
+  "input_folder": "src",
+  "input_filter": [],
+  "exclude_filter": [
+    "zmono_import\\."
+  ],
+  "output_folder": "output",
+  "libs": [
+    { "url": "https://github.com/open-abap/open-abap-core" },
+    {
+      "url": "https://github.com/abapGit/abapGit",
+      "files": [
+        "/src/**/zif_abapgit_progress.*",
+        "/src/**/zcx_abapgit_exception.*",
+        "/src/**/zcx_abapgit_ajson_error.*",
+        "/src/**/zif_abapgit_http_*",
+        "/src/**/*abapgit_ajson*"
+      ]
+    }
+  ],
+  "write_unit_tests": true,
+  "write_source_map": true,
+  "options": {
+    "ignoreSyntaxCheck": false,
+    "addFilenames": true,
+    "addCommonJS": true,
+    "unknownTypes": "runtimeError"
+  }
+}

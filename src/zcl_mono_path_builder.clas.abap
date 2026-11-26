@@ -23,11 +23,11 @@ CLASS zcl_mono_path_builder DEFINITION
 
     "! Sets name, path and starting folder of all components
     METHODS fill_paths
-      CHANGING components TYPE zif_mono_types=>components.
+      CHANGING components TYPE zif_mono_types=>ty_components.
 
     "! Returns all component paths that are used by more than one component
     METHODS find_path_collisions
-      IMPORTING components    TYPE zif_mono_types=>components
+      IMPORTING components    TYPE zif_mono_types=>ty_components
       RETURNING VALUE(result) TYPE string_table.
 
   PRIVATE SECTION.
@@ -91,7 +91,7 @@ CLASS zcl_mono_path_builder IMPLEMENTATION.
 
   METHOD find_path_collisions.
     DATA used_paths TYPE HASHED TABLE OF string WITH UNIQUE KEY table_line.
-    DATA component TYPE zif_mono_types=>component.
+    DATA component TYPE zif_mono_types=>ty_component.
 
     LOOP AT components INTO component.
       INSERT component-path INTO TABLE used_paths.
