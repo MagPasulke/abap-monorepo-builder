@@ -43,7 +43,7 @@ CLASS ltcl_path_builder IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD paths_with_top_folder.
-    DATA(components) = VALUE zif_mono_types=>components( ( root_package = 'ZAPP' ) ).
+    DATA(components) = VALUE zif_mono_types=>ty_components( ( root_package = 'ZAPP' ) ).
 
     NEW zcl_mono_path_builder( `abap/backend` )->fill_paths( CHANGING components = components ).
 
@@ -56,7 +56,7 @@ CLASS ltcl_path_builder IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD paths_without_top_folder.
-    DATA(components) = VALUE zif_mono_types=>components( ( root_package = '$APP' ) ).
+    DATA(components) = VALUE zif_mono_types=>ty_components( ( root_package = '$APP' ) ).
 
     NEW zcl_mono_path_builder( `` )->fill_paths( CHANGING components = components ).
 
@@ -96,7 +96,7 @@ CLASS ltcl_path_builder IMPLEMENTATION.
 
   METHOD collisions_detected.
     DATA(cut) = NEW zcl_mono_path_builder( `` ).
-    DATA(components) = VALUE zif_mono_types=>components( ( root_package = '$ZAPP' )
+    DATA(components) = VALUE zif_mono_types=>ty_components( ( root_package = '$ZAPP' )
                                                          ( root_package = 'ZAPP' )
                                                          ( root_package = 'ZLIB' ) ).
     cut->fill_paths( CHANGING components = components ).

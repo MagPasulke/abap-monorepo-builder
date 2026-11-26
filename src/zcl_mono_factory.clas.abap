@@ -20,11 +20,8 @@ ENDCLASS.
 CLASS zcl_mono_factory IMPLEMENTATION.
 
   METHOD create_importer.
-    DATA pr_client TYPE REF TO zif_mono_pr_client.
-
-    IF zcl_mono_pr_client_github=>get_owner_and_repo( git_url ) IS NOT INITIAL.
-      pr_client = NEW zcl_mono_pr_client_github( git_url ).
-    ENDIF.
+    DATA(pr_client) = COND #( WHEN zcl_mono_pr_client_github=>get_owner_and_repo( git_url ) IS NOT INITIAL
+                              THEN NEW zcl_mono_pr_client_github( git_url ) ).
 
     result = NEW #( package_source = NEW zcl_mono_package_source( )
                     repo_gateway   = NEW zcl_mono_repo_gateway( )

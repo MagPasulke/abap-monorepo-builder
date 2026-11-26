@@ -39,7 +39,7 @@ CLASS lcl_app DEFINITION FINAL.
       IMPORTING result TYPE REF TO zcl_mono_result.
 
     CLASS-METHODS get_color
-      IMPORTING status        TYPE zif_mono_types=>status
+      IMPORTING status        TYPE zif_mono_types=>ty_status
       RETURNING VALUE(result) TYPE i.
 
 ENDCLASS.
@@ -82,7 +82,7 @@ CLASS lcl_app IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    DATA(parameters) = VALUE zif_mono_types=>run_parameters(
+    DATA(parameters) = VALUE zif_mono_types=>ty_run_parameters(
       packages     = s_pack[]
       git_url      = condense( p_giturl )
       folder_logic = p_logic
@@ -111,7 +111,7 @@ CLASS lcl_app IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD display_components.
-    DATA component TYPE zif_mono_types=>component_result.
+    DATA component TYPE zif_mono_types=>ty_component_result.
     DATA status_text TYPE string.
     DATA step_text TYPE string.
     DATA merged TYPE string.
@@ -171,20 +171,20 @@ CLASS lcl_app IMPLEMENTATION.
            20 skipped LEFT-JUSTIFIED.
     SKIP.
 
-    IF run_info-pr_url IS NOT INITIAL.
+    IF run_info-pull_request_url IS NOT INITIAL.
       FORMAT COLOR = colors-positive.
       WRITE: / TEXT-015,
-             20 run_info-pr_url.
+             20 run_info-pull_request_url.
     ENDIF.
-    IF run_info-pr_error IS NOT INITIAL.
+    IF run_info-pull_request_error IS NOT INITIAL.
       FORMAT COLOR = colors-negative.
       WRITE: / TEXT-016,
-             / run_info-pr_error,
+             / run_info-pull_request_error,
              / TEXT-017.
     ENDIF.
-    IF run_info-pr_hint IS NOT INITIAL.
+    IF run_info-pull_request_hint IS NOT INITIAL.
       FORMAT COLOR = colors-warning.
-      WRITE / run_info-pr_hint.
+      WRITE / run_info-pull_request_hint.
     ENDIF.
     IF run_info-global_error IS NOT INITIAL.
       FORMAT COLOR = colors-negative.

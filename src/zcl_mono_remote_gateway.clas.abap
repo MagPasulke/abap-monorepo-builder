@@ -36,8 +36,7 @@ CLASS zcl_mono_remote_gateway IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_mono_remote_gateway~connect.
-    DATA authenticated TYPE abap_bool.
-    DATA error TYPE REF TO zcx_abapgit_exception.
+    DATA(authenticated) = abap_false.
 
     request_credentials( git_url ).
     DO max_login_attempts TIMES.
@@ -49,7 +48,7 @@ CLASS zcl_mono_remote_gateway IMPLEMENTATION.
           IF sy-index < max_login_attempts.
             request_credentials( git_url ).
           ENDIF.
-        CATCH zcx_abapgit_exception INTO error.
+        CATCH zcx_abapgit_exception INTO DATA(error).
           RAISE EXCEPTION TYPE zcx_mono_global_error
             MESSAGE e011(zmono) WITH git_url
             EXPORTING previous = error.

@@ -12,12 +12,12 @@ CLASS zcl_mono_repo_gateway DEFINITION
     CONSTANTS max_warning_texts TYPE i VALUE 3.
 
     METHODS get_repo
-      IMPORTING repo_key      TYPE zif_mono_types=>repo_key
+      IMPORTING repo_key      TYPE zif_mono_types=>ty_repo_key
       RETURNING VALUE(result) TYPE REF TO zif_abapgit_repo
       RAISING   zcx_abapgit_exception.
 
     METHODS get_online_repo
-      IMPORTING repo_key      TYPE zif_mono_types=>repo_key
+      IMPORTING repo_key      TYPE zif_mono_types=>ty_repo_key
       RETURNING VALUE(result) TYPE REF TO zif_abapgit_repo_online
       RAISING   zcx_abapgit_exception.
 
@@ -29,7 +29,7 @@ CLASS zcl_mono_repo_gateway DEFINITION
 
     METHODS collect_warnings
       IMPORTING serialization_log TYPE REF TO zif_abapgit_log
-      CHANGING  push_result       TYPE zif_mono_types=>push_result.
+      CHANGING  push_result       TYPE zif_mono_types=>ty_push_result.
 
 ENDCLASS.
 
@@ -37,12 +37,11 @@ ENDCLASS.
 CLASS zcl_mono_repo_gateway IMPLEMENTATION.
 
   METHOD zif_mono_repo_gateway~list_repositories.
-    DATA repo TYPE REF TO zif_abapgit_repo.
-    DATA assignment TYPE zif_mono_types=>repo_assignment.
+    DATA assignment TYPE zif_mono_types=>ty_repo_assignment.
 
     TRY.
         DATA(repos) = zcl_abapgit_repo_srv=>get_instance( )->list( ).
-        LOOP AT repos INTO repo.
+        LOOP AT repos INTO DATA(repo).
           assignment = VALUE #( name         = repo->get_name( )
                                 package_name = repo->get_package( ) ).
           IF repo->get_local_settings( )-ignore_subpackages = abap_false.
@@ -60,7 +59,6 @@ CLASS zcl_mono_repo_gateway IMPLEMENTATION.
 
   METHOD zif_mono_repo_gateway~check_folder_logic.
     DATA sub_package TYPE devclass.
-    DATA error TYPE REF TO zcx_abapgit_exception.
 
     DATA(dot_abapgit) = zcl_abapgit_dot_abapgit=>build_default( ).
     dot_abapgit->set_folder_logic( folder_logic ).
@@ -72,7 +70,7 @@ CLASS zcl_mono_repo_gateway IMPLEMENTATION.
           folder_logic_service->package_to_path( iv_top     = component-root_package
                                                  io_dot     = dot_abapgit
                                                  iv_package = sub_package ).
-        CATCH zcx_abapgit_exception INTO error.
+        CATCH zcx_abapgit_exception INTO DATA(error).
           RAISE EXCEPTION TYPE zcx_mono_component_error
             MESSAGE e004(zmono) WITH folder_logic sub_package
             EXPORTING previous = error.

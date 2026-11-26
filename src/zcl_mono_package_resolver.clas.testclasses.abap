@@ -9,12 +9,12 @@ CLASS ltd_package_source DEFINITION FINAL.
 
   PRIVATE SECTION.
     TYPES:
-      BEGIN OF package_entry,
+      BEGIN OF ty_package_entry,
         package_name TYPE devclass,
         parent       TYPE devclass,
-      END OF package_entry.
+      END OF ty_package_entry.
 
-    DATA packages TYPE STANDARD TABLE OF package_entry WITH EMPTY KEY.
+    DATA packages TYPE STANDARD TABLE OF ty_package_entry WITH EMPTY KEY.
 
 ENDCLASS.
 
@@ -46,7 +46,7 @@ CLASS ltd_package_source IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_mono_package_source~get_sub_packages.
-    DATA entry TYPE package_entry.
+    DATA entry TYPE ty_package_entry.
 
     LOOP AT packages INTO entry WHERE parent = package_name.
       INSERT entry-package_name INTO TABLE result.
@@ -98,7 +98,7 @@ CLASS ltcl_package_resolver IMPLEMENTATION.
       exp = 'ZAPP'
       act = components[ 1 ]-root_package ).
     cl_abap_unit_assert=>assert_equals(
-      exp = VALUE zif_mono_types=>package_names( ( 'ZAPP_CORE' ) ( 'ZAPP_CORE_UTIL' ) ( 'ZAPP_TEST' ) )
+      exp = VALUE zif_mono_types=>ty_package_names( ( 'ZAPP_CORE' ) ( 'ZAPP_CORE_UTIL' ) ( 'ZAPP_TEST' ) )
       act = components[ 1 ]-merged_from ).
   ENDMETHOD.
 

@@ -1,0 +1,10 @@
+# Artefacts
+node_modules/
+lint_deps
+output
+/tmp/
+
+# dotenv (SAP credentials)
+.env
+.env.*
+!.env.example

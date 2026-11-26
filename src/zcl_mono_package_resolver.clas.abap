@@ -12,24 +12,24 @@ CLASS zcl_mono_package_resolver DEFINITION
     "! Resolves the selection into components with their complete package tree.
     "! Selected packages below another selected package are merged into the topmost one.
     METHODS resolve
-      IMPORTING selection     TYPE zif_mono_types=>package_range
-      RETURNING VALUE(result) TYPE zif_mono_types=>components
+      IMPORTING selection     TYPE zif_mono_types=>ty_package_range
+      RETURNING VALUE(result) TYPE zif_mono_types=>ty_components
       RAISING   zcx_mono_global_error.
 
   PRIVATE SECTION.
-    TYPES package_set TYPE HASHED TABLE OF devclass WITH UNIQUE KEY table_line.
+    TYPES ty_package_set TYPE HASHED TABLE OF devclass WITH UNIQUE KEY table_line.
 
     DATA package_source TYPE REF TO zif_mono_package_source.
 
     METHODS has_selected_super
       IMPORTING package_name  TYPE devclass
-                selected      TYPE package_set
+                selected      TYPE ty_package_set
       RETURNING VALUE(result) TYPE abap_bool
       RAISING   zcx_mono_global_error.
 
     METHODS find_root
       IMPORTING package_name  TYPE devclass
-                roots         TYPE package_set
+                roots         TYPE ty_package_set
       RETURNING VALUE(result) TYPE devclass
       RAISING   zcx_mono_global_error.
 
@@ -43,12 +43,12 @@ CLASS zcl_mono_package_resolver IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD resolve.
-    DATA roots TYPE zif_mono_types=>package_names.
-    DATA merged TYPE zif_mono_types=>package_names.
+    DATA roots TYPE zif_mono_types=>ty_package_names.
+    DATA merged TYPE zif_mono_types=>ty_package_names.
     DATA candidate TYPE devclass.
     DATA merged_package TYPE devclass.
     DATA root_package TYPE devclass.
-    FIELD-SYMBOLS <component> TYPE zif_mono_types=>component.
+    FIELD-SYMBOLS <component> TYPE zif_mono_types=>ty_component.
 
     DATA(selected) = package_source->select_packages( selection ).
     IF selected IS INITIAL.
@@ -56,7 +56,7 @@ CLASS zcl_mono_package_resolver IMPLEMENTATION.
         MESSAGE e017(zmono).
     ENDIF.
 
-    DATA(selected_set) = VALUE package_set( FOR selected_package IN selected ( selected_package ) ).
+    DATA(selected_set) = VALUE ty_package_set( FOR selected_package IN selected ( selected_package ) ).
     LOOP AT selected INTO candidate.
       IF has_selected_super( package_name = candidate
                              selected     = selected_set ) = abap_true.
@@ -70,7 +70,7 @@ CLASS zcl_mono_package_resolver IMPLEMENTATION.
                       ( root_package = root
                         sub_packages = package_source->get_sub_packages( root ) ) ).
 
-    DATA(root_set) = VALUE package_set( FOR root_name IN roots ( root_name ) ).
+    DATA(root_set) = VALUE ty_package_set( FOR root_name IN roots ( root_name ) ).
     LOOP AT merged INTO merged_package.
       root_package = find_root( package_name = merged_package
                                 roots        = root_set ).

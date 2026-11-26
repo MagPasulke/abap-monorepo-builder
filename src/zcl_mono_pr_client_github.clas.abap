@@ -54,9 +54,6 @@ CLASS zcl_mono_pr_client_github IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_mono_pr_client~create_pull_request.
-    DATA status_code TYPE i.
-    DATA details TYPE string.
-
     TRY.
         DATA(agent) = zcl_abapgit_http_agent=>create( ).
         agent->global_headers( )->set( iv_key = `Accept`
@@ -77,8 +74,8 @@ CLASS zcl_mono_pr_client_github IMPLEMENTATION.
                                                        head  = head
                                                        base  = base ) ).
         IF response->is_ok( ) = abap_false.
-          status_code = response->code( ).
-          details = get_error_details( response ).
+          DATA(status_code) = response->code( ).
+          DATA(details) = get_error_details( response ).
           RAISE EXCEPTION TYPE zcx_mono_global_error
             MESSAGE e014(zmono) WITH status_code details.
         ENDIF.
