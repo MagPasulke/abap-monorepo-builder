@@ -12,13 +12,13 @@ Use the built-in `adt_rununit` custom tool.
 | Parameter | Description |
 |-----------|-------------|
 | `objectType` | `CLAS` (class) or `DEVC` (package). Defaults to `DEVC` when omitted. |
-| `objectName` | ABAP object name (e.g. `ZCL_MONO_IMPORTER` or `ZMONO`). If omitted, uses `SAP_ROOT_PACKAGE` from `.env`. |
+| `objectName` | ABAP object name (e.g. `ZCL_MONO_IMPORTER` or `$ZABAPMONOREPO`). If omitted, uses `SAP_ROOT_PACKAGE` from `.env`. |
 
 ### Examples
 
 - Run all tests in the root package: `adt_rununit()` (no args)
 - Run tests for a specific class: `adt_rununit(objectType="CLAS", objectName="ZCL_MONO_IMPORTER")`
-- Run tests for a specific package: `adt_rununit(objectType="DEVC", objectName="ZMONO")`
+- Run tests for a specific package: `adt_rununit(objectType="DEVC", objectName="$ZABAPMONOREPO")`
 
 ## When to use
 

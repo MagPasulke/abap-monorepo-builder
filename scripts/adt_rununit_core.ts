@@ -10,7 +10,7 @@ export interface AdtRunUnitOptions {
   password: string
   /** Object type: CLAS or DEVC. Defaults to DEVC when objectName is from SAP_ROOT_PACKAGE. */
   objectType: "CLAS" | "DEVC"
-  /** Object name (e.g. ZCL_MONO_IMPORTER or ZMONO) */
+  /** Object name (e.g. ZCL_MONO_IMPORTER or $ZABAPMONOREPO) */
   objectName: string
   /** PEM file with the CA certificate of the SAP system (optional) */
   caFile?: string

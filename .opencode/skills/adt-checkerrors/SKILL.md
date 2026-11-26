@@ -42,7 +42,7 @@ This tool (and `adt_gitpull`, `adt_rununit`) must **only be used in interactive 
   SAP_ADT_URL=https://your-sap-system:44300
   SAP_ADT_USER=DEVELOPER
   SAP_ADT_PASSWORD=secret
-  SAP_ROOT_PACKAGE=$ZMONO
+  SAP_ROOT_PACKAGE=$ZABAPMONOREPO
   # optional, if the system's TLS certificate is not trusted by Node.js
   SAP_ADT_CA_FILE=/path/to/ca.pem
   ```

@@ -37,7 +37,7 @@ export default tool({
       .optional(),
     objectName: tool.schema.string()
       .describe(
-        "ABAP object name (e.g. 'ZCL_MONO_IMPORTER' for a class, or 'ZMONO' for a package). " +
+        "ABAP object name (e.g. 'ZCL_MONO_IMPORTER' for a class, or '$ZABAPMONOREPO' for a package). " +
         "If omitted, uses SAP_ROOT_PACKAGE from .env."
       )
       .optional(),

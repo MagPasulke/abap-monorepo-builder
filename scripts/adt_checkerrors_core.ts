@@ -8,7 +8,7 @@ export interface AdtCheckErrorsOptions {
   user: string
   /** SAP password */
   password: string
-  /** SAP package to check (e.g. "$ZMONO"). Uses SAP_ROOT_PACKAGE from env if omitted. */
+  /** SAP package to check (e.g. "$ZABAPMONOREPO"). Uses SAP_ROOT_PACKAGE from env if omitted. */
   package?: string
   /** PEM file with the CA certificate of the SAP system (optional) */
   caFile?: string
@@ -57,7 +57,7 @@ export type AdtCheckErrorsResult = AdtCheckErrorsSuccess | AdtCheckErrorsError
  */
 export async function adtCheckErrors(options: AdtCheckErrorsOptions): Promise<AdtCheckErrorsResult> {
   const { url, user, password } = options
-  const pkg = options.package || "$ZMONO"
+  const pkg = options.package || "$ZABAPMONOREPO"
 
   // 1. Connect to SAP system
   let client: ADTClient
