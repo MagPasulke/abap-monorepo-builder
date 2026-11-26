@@ -24,6 +24,7 @@ On-ramps: `/triage` for incoming issues, `/diagnosing-bugs` for hard bugs, `/way
 
 - Clean ABAP without Hungarian prefixes; types `ty_*`; selection screen `p_*`/`s_*`. abapGit parameter names (`iv_*` …) stay as abapGit defines them. `abaplint.jsonc` enforces the rest.
 - SAP package `$ZABAPMONOREPO` (local, not transportable).
+- Commits and PR titles follow Conventional Commits (`feat: …`, `fix: …`, `chore: …`, `docs: …`). PRs are squash-merged with the PR title as commit message, so the PR title must be a valid conventional commit.
 
 ## Verification
 
